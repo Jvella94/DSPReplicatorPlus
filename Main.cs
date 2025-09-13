@@ -2,28 +2,11 @@
 using BepInEx.Logging;
 using BepInEx.Configuration;
 using HarmonyLib;
-using System;
-using System.IO;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Reflection.Emit;
-using System.Net;
-using System.Linq;
-using System.Text;
-using System.Collections;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
-using UnityEngine.Networking;
 using System.Security;
-using System.Security.Permissions;
 
 [module: UnverifiableCode]
-[assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
 
 //アップデート予定？
 //最大値の表示
@@ -33,7 +16,7 @@ using System.Security.Permissions;
 
 namespace DSPReplicatorPlus
 {
-    [BepInPlugin("Appun.DSP.plugin.DSPReplicatorPlus", "DSPReplicatorPlus", "0.0.2")]
+    [BepInPlugin("Appun.DSP.plugin.DSPReplicatorPlus", "DSPReplicatorPlus", "0.0.3")]
     [HarmonyPatch]
     public class Main : BaseUnityPlugin
     {

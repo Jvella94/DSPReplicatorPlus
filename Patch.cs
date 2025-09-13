@@ -1,25 +1,5 @@
-﻿using BepInEx;
-using BepInEx.Configuration;
-using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.Events;
-using UnityEngine.EventSystems;
-using System.Reflection.Emit;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System;
-using System.IO;
-using BepInEx.Logging;
+﻿using UnityEngine.UI;
 using HarmonyLib;
-using System.Reflection;
-using System.Security;
-using System.Security.Permissions;
-using static UnityEngine.GUILayout;
-using UnityEngine.Rendering;
-using Steamworks;
-using rail;
-using xiaoye97;
 
 namespace DSPReplicatorPlus
 {
@@ -39,10 +19,9 @@ namespace DSPReplicatorPlus
                 return;
             }
 
-                if (GameMain.sandboxToolsEnabled && __instance.isInstantItem)
+            if (GameMain.sandboxToolsEnabled && __instance.isInstantItem)
             {
                 UI.headMax.GetComponent<Button>().interactable = true;
-                //UI.headStack.GetComponent<Button>().interactable = true;
                 UI.head500.GetComponent<Button>().interactable = true;
                 UI.head100.GetComponent<Button>().interactable = true;
                 UI.head50.GetComponent<Button>().interactable = true;
@@ -51,7 +30,6 @@ namespace DSPReplicatorPlus
                 UI.head1.GetComponent<Button>().interactable = true;
 
                 UI.endMax.GetComponent<Button>().interactable = true;
-                //UI.endStack.GetComponent<Button>().interactable = true;
                 UI.end500.GetComponent<Button>().interactable = true;
                 UI.end100.GetComponent<Button>().interactable = true;
                 UI.end50.GetComponent<Button>().interactable = true;
@@ -62,7 +40,6 @@ namespace DSPReplicatorPlus
             else if (!__instance.selectedRecipe.Handcraft)
             {
                 UI.headMax.GetComponent<Button>().interactable = false;
-                //UI.headStack.GetComponent<Button>().interactable = false;
                 UI.head500.GetComponent<Button>().interactable = false;
                 UI.head100.GetComponent<Button>().interactable = false;
                 UI.head50.GetComponent<Button>().interactable = false;
@@ -71,7 +48,6 @@ namespace DSPReplicatorPlus
                 UI.head1.GetComponent<Button>().interactable = false;
 
                 UI.endMax.GetComponent<Button>().interactable = false;
-                //UI.endStack.GetComponent<Button>().interactable = false;
                 UI.end500.GetComponent<Button>().interactable = false;
                 UI.end100.GetComponent<Button>().interactable = false;
                 UI.end50.GetComponent<Button>().interactable = false;
@@ -81,45 +57,36 @@ namespace DSPReplicatorPlus
             }
             else if (__instance.selectedRecipe != null)
             {
-                int num = __instance.mechaForge.PredictTaskCount(__instance.selectedRecipe.ID, 999);
-                int stackSize = LDB.items.Select(LDB.recipes.Select(__instance.selectedRecipe.ID).Results[0]).StackSize;
+                int num = __instance.mechaForge.PredictTaskCount(__instance.selectedRecipe.ID, 999, false);
 
-                UI.headMax.GetComponent<Button>().interactable = (num > 0) ? true : false;
-                //UI.headStack.GetComponent<Button>().interactable = (num >= stackSize) ? true : false; ;
-                UI.head500.GetComponent<Button>().interactable = (num >= 500) ? true : false; ;
-                UI.head100.GetComponent<Button>().interactable = (num >= 100) ? true : false;
-                UI.head50.GetComponent<Button>().interactable = (num >= 50) ? true : false;
-                UI.head10.GetComponent<Button>().interactable = (num >= 10) ? true : false;
-                UI.head5.GetComponent<Button>().interactable = (num >= 5) ? true : false;
-                UI.head1.GetComponent<Button>().interactable = (num >= 1) ? true : false;
+                UI.headMax.GetComponent<Button>().interactable = (num > 0);
+                UI.head500.GetComponent<Button>().interactable = (num >= 500); ;
+                UI.head100.GetComponent<Button>().interactable = (num >= 100);
+                UI.head50.GetComponent<Button>().interactable = (num >= 50);
+                UI.head10.GetComponent<Button>().interactable = (num >= 10);
+                UI.head5.GetComponent<Button>().interactable = (num >= 5);
+                UI.head1.GetComponent<Button>().interactable = (num >= 1);
 
-                UI.endMax.GetComponent<Button>().interactable = (num > 0) ? true : false;
-                //UI.endStack.GetComponent<Button>().interactable = (num >= stackSize) ? true : false;
-                UI.end500.GetComponent<Button>().interactable = (num >= 500) ? true : false;
-                UI.end100.GetComponent<Button>().interactable = (num >= 100) ? true : false;
-                UI.end50.GetComponent<Button>().interactable = (num >= 50) ? true : false;
-                UI.end10.GetComponent<Button>().interactable = (num >= 10) ? true : false;
-                UI.end5.GetComponent<Button>().interactable = (num >= 5) ? true : false;
-                UI.end1.GetComponent<Button>().interactable = (num >= 1) ? true : false;
-
-                //UI.headStack.transform.Find("text").GetComponent<Text>().text = stackSize.ToString();
-                //UI.endStack.transform.Find("text").GetComponent<Text>().text = stackSize.ToString();
-
+                UI.endMax.GetComponent<Button>().interactable = (num > 0);
+                UI.end500.GetComponent<Button>().interactable = (num >= 500);
+                UI.end100.GetComponent<Button>().interactable = (num >= 100);
+                UI.end50.GetComponent<Button>().interactable = (num >= 50);
+                UI.end10.GetComponent<Button>().interactable = (num >= 10);
+                UI.end5.GetComponent<Button>().interactable = (num >= 5);
+                UI.end1.GetComponent<Button>().interactable = (num >= 1);
             }
         }
 
         //前回開いていたレシピを表示する
         [HarmonyPostfix, HarmonyPatch(typeof(UIReplicatorWindow), "OnRecipeMouseDown")]
         public static void UIReplicatorWindow_SetSelectedRecipeIndex_Postfix(UIReplicatorWindow __instance)
-        { 
-            //Main.LogManager.Logger.LogInfo("----------------------------------------------------__instance.mouseRecipeIndex : " + __instance.mouseRecipeIndex);
-            //Main.LogManager.Logger.LogInfo("---------------------------------------------------------__instance.currentType : " + __instance.currentType);
-            //Main.LogManager.Logger.LogInfo("------------------------------------------------------__instance.selectedRecipe : " + __instance.selectedRecipe.name);
-
+        {
             SelectedRecipeIndexBk = __instance.mouseRecipeIndex;
             currentTypeBk = __instance.currentType;
             resipeBk = __instance.selectedRecipe;
         }
+
+
         [HarmonyPostfix, HarmonyPatch(typeof(UIReplicatorWindow), "_OnOpen")]
         public static void UIReplicatorWindow_OnOpen_Postfix(UIReplicatorWindow __instance)
         {

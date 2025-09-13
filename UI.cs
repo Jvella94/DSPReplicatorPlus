@@ -1,25 +1,6 @@
-﻿using BepInEx;
-using BepInEx.Configuration;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Events;
-using UnityEngine.EventSystems;
-using System.Reflection.Emit;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System;
-using System.IO;
-using BepInEx.Logging;
-using HarmonyLib;
-using System.Reflection;
-using System.Security;
-using System.Security.Permissions;
-using static UnityEngine.GUILayout;
-using UnityEngine.Rendering;
-using Steamworks;
-using rail;
-using xiaoye97;
 
 namespace DSPReplicatorPlus
 {
@@ -28,7 +9,6 @@ namespace DSPReplicatorPlus
     {
         public static GameObject headTitle = new GameObject();
         public static GameObject headMax = new GameObject();
-        public static GameObject headStack = new GameObject();
         public static GameObject head500 = new GameObject();
         public static GameObject head100 = new GameObject();
         public static GameObject head50 = new GameObject();
@@ -37,7 +17,6 @@ namespace DSPReplicatorPlus
         public static GameObject head1 = new GameObject();
         public static GameObject endTitle = new GameObject();
         public static GameObject endMax = new GameObject();
-        public static GameObject endStack = new GameObject();
         public static GameObject end500 = new GameObject();
         public static GameObject end100 = new GameObject();
         public static GameObject end50 = new GameObject();
@@ -51,9 +30,7 @@ namespace DSPReplicatorPlus
         public static float diffY = 22;
 
         public static void Create()
-
         {
-
             //ボタンの作成
             GameObject multiValueText = UIRoot.instance.uiGame.replicator.multiValueText.gameObject;
             headTitle = Instantiate(multiValueText, multiValueText.transform.parent);
@@ -64,15 +41,10 @@ namespace DSPReplicatorPlus
 
             headMax = Instantiate(minusButton, minusButton.transform.parent);
             headMax.GetComponent<RectTransform>().sizeDelta = new Vector2(40, 24);
-            //headMax.transform.localScale = new Vector3(0.9f, 0.9f, 0);
             headMax.transform.localPosition = new Vector3(headX, headY, 0);
             headMax.transform.Find("text").GetComponent<Text>().text = "MAX".Translate();
             headMax.transform.Find("text").GetComponent<Text>().font = headTitle.GetComponent<Text>().font;
             headMax.transform.Find("text").GetComponent<Text>().fontSize = 16;
-
-            //headStack = Instantiate(headMax, headMax.transform.parent);
-            //headStack.transform.localPosition = new Vector3(headX, headY - diffY * 1, 0);
-            //headStack.transform.Find("text").GetComponent<Text>().text = "1Stack";
 
             head500 = Instantiate(headMax, headMax.transform.parent);
             head500.transform.localPosition = new Vector3(headX, headY - diffY * 1, 0);
@@ -111,11 +83,6 @@ namespace DSPReplicatorPlus
             endMax.transform.Find("text").GetComponent<Text>().text = "MAX".Translate();
             endMax.transform.Find("text").GetComponent<Text>().font = headTitle.GetComponent<Text>().font;
             endMax.transform.Find("text").GetComponent<Text>().fontSize = 16;
-
-            //endStack = Instantiate(endMax, endMax.transform.parent);
-            //endStack.transform.localPosition = new Vector3(headX + diffX, headY - diffY * 1, 0);
-            //endStack.transform.Find("text").transform.localPosition = new Vector3(-1, 1, 0);
-            //endStack.transform.Find("text").GetComponent<Text>().text = "1Stack";
 
             end500 = Instantiate(endMax, endMax.transform.parent);
             end500.transform.localPosition = new Vector3(headX + diffX, headY - diffY * 1, 0);
@@ -161,120 +128,106 @@ namespace DSPReplicatorPlus
 
 
             //イベント
-            headMax.GetComponent<Button>().onClick.AddListener(onClickHeadMax);
-            //headStack.GetComponent<Button>().onClick.AddListener(onClickheadStack);
-            head500.GetComponent<Button>().onClick.AddListener(onClickHead500);
-            head100.GetComponent<Button>().onClick.AddListener(onClickHead100);
-            head50.GetComponent<Button>().onClick.AddListener(onClickHead50);
-            head10.GetComponent<Button>().onClick.AddListener(onClickHead10);
-            head5.GetComponent<Button>().onClick.AddListener(onClickHead5);
-            head1.GetComponent<Button>().onClick.AddListener(onClickHead1);
-            endMax.GetComponent<Button>().onClick.AddListener(onClickEndMax);
-            //endStack.GetComponent<Button>().onClick.AddListener(onClickEndStack);
-            end500.GetComponent<Button>().onClick.AddListener(onClickEnd500);
-            end100.GetComponent<Button>().onClick.AddListener(onClickEnd100);
-            end50.GetComponent<Button>().onClick.AddListener(onClickEnd50);
-            end10.GetComponent<Button>().onClick.AddListener(onClickEnd10);
-            end5.GetComponent<Button>().onClick.AddListener(onClickEnd5);
-            end1.GetComponent<Button>().onClick.AddListener(onClickEnd1);
+            headMax.GetComponent<Button>().onClick.AddListener(OnClickHeadMax);
+            head500.GetComponent<Button>().onClick.AddListener(OnClickHead500);
+            head100.GetComponent<Button>().onClick.AddListener(OnClickHead100);
+            head50.GetComponent<Button>().onClick.AddListener(OnClickHead50);
+            head10.GetComponent<Button>().onClick.AddListener(OnClickHead10);
+            head5.GetComponent<Button>().onClick.AddListener(OnClickHead5);
+            head1.GetComponent<Button>().onClick.AddListener(OnClickHead1);
+            endMax.GetComponent<Button>().onClick.AddListener(OnClickEndMax);
+            end500.GetComponent<Button>().onClick.AddListener(OnClickEnd500);
+            end100.GetComponent<Button>().onClick.AddListener(OnClickEnd100);
+            end50.GetComponent<Button>().onClick.AddListener(OnClickEnd50);
+            end10.GetComponent<Button>().onClick.AddListener(OnClickEnd10);
+            end5.GetComponent<Button>().onClick.AddListener(OnClickEnd5);
+            end1.GetComponent<Button>().onClick.AddListener(OnClickEnd1);
         }
 
-        public static void onClickEndMax()
+        public static void OnClickEndMax()
         {
             UIReplicatorWindow replicator = UIRoot.instance.uiGame.replicator;
             if (replicator.isInstantItem)
             {
-                mechaForgeAddTask(1000);
+                MechaForgeAddTask(1000);
             }
             else
             {
-                mechaForgeAddTask(replicator.mechaForge.PredictTaskCount(replicator.selectedRecipe.ID, 999));
+                MechaForgeAddTask(replicator.mechaForge.PredictTaskCount(replicator.selectedRecipe.ID, 999));
             }
         }
 
-        //public static void onClickEndStack()
-        //{
-        //    UIReplicatorWindow replicator = UIRoot.instance.uiGame.replicator;
-        //    mechaForgeAddTask(LDB.items.Select(LDB.recipes.Select(replicator.selectedRecipe.ID).Results[0]).StackSize);
-        //}
-        public static void onClickEnd500()
+        public static void OnClickEnd500()
         {
-            mechaForgeAddTask(500);
+            MechaForgeAddTask(500);
         }
-        public static void onClickEnd100()
+        public static void OnClickEnd100()
         {
-            mechaForgeAddTask(100);
+            MechaForgeAddTask(100);
         }
-        public static void onClickEnd50()
+        public static void OnClickEnd50()
         {
-            mechaForgeAddTask(50);
+            MechaForgeAddTask(50);
         }
-        public static void onClickEnd10()
+        public static void OnClickEnd10()
         {
-            mechaForgeAddTask(10);
+            MechaForgeAddTask(10);
         }
-        public static void onClickEnd5()
+        public static void OnClickEnd5()
         {
-            mechaForgeAddTask(5);
+            MechaForgeAddTask(5);
         }
-        public static void onClickEnd1()
+        public static void OnClickEnd1()
         {
-            mechaForgeAddTask(1);
+            MechaForgeAddTask(1);
         }
 
-
-        public static void onClickHeadMax()
+        public static void OnClickHeadMax()
         {
             UIReplicatorWindow replicator = UIRoot.instance.uiGame.replicator;
             if(replicator.isInstantItem)
             {
-                mechaForgeAddTaskHead(1000);
+                MechaForgeAddTaskHead(1000);
             }
             else
             {
-                mechaForgeAddTaskHead(replicator.mechaForge.PredictTaskCount(replicator.selectedRecipe.ID, 999));
+                MechaForgeAddTaskHead(replicator.mechaForge.PredictTaskCount(replicator.selectedRecipe.ID, 999));
             }
         }
-        //public static void onClickheadStack()
-        //{
-        //    UIReplicatorWindow replicator = UIRoot.instance.uiGame.replicator;
-        //    mechaForgeAddTaskHead(LDB.items.Select(LDB.recipes.Select(replicator.selectedRecipe.ID).Results[0]).StackSize);
-        //}
 
-        public static void onClickHead500()
+        public static void OnClickHead500()
         {
-            mechaForgeAddTaskHead(500);
+            MechaForgeAddTaskHead(500);
         }
-        public static void onClickHead100()
+        public static void OnClickHead100()
         {
-            mechaForgeAddTaskHead(100);
+            MechaForgeAddTaskHead(100);
         }
-        public static void onClickHead50()
+        public static void OnClickHead50()
         {
-            mechaForgeAddTaskHead(50);
+            MechaForgeAddTaskHead(50);
         }
-        public static void onClickHead10()
+        public static void OnClickHead10()
         {
-            mechaForgeAddTaskHead(10);
+            MechaForgeAddTaskHead(10);
         }
-        public static void onClickHead5()
+        public static void OnClickHead5()
         {
-            mechaForgeAddTaskHead(5);
+            MechaForgeAddTaskHead(5);
         }
-        public static void onClickHead1()
+        public static void OnClickHead1()
         {
-            mechaForgeAddTaskHead(1);
+            MechaForgeAddTaskHead(1);
         }
 
-
-        public static void mechaForgeAddTask(int count)
+        public static void MechaForgeAddTask(int count)
         {
             UIReplicatorWindow replicator = UIRoot.instance.uiGame.replicator;
             int id = replicator.selectedRecipe.ID;
             replicator.mechaForge.AddTask(id, count);
         }
 
-        public static void mechaForgeAddTaskHead(int count)
+        public static void MechaForgeAddTaskHead(int count)
         {
             UIReplicatorWindow replicator = UIRoot.instance.uiGame.replicator;
             int id = replicator.selectedRecipe.ID;
@@ -287,11 +240,8 @@ namespace DSPReplicatorPlus
             {
                 List<ForgeTask> list = new List<ForgeTask>(replicator.mechaForge.tasks);
                 replicator.mechaForge.tasks.Clear();
-
-
                 replicator.mechaForge.AddTask(id, count);
                 int incr = replicator.mechaForge.tasks.Count;
-                //Main.LogManager.Logger.LogInfo($"----------------------------------------------------{incr}");
                 for (int i = 0; i < list.Count; i++)
                 {
                     if (list[i].parentTaskIndex >= 0)
@@ -300,15 +250,7 @@ namespace DSPReplicatorPlus
                     }
                     replicator.mechaForge.tasks.Add(list[i]);
                 }
-                //for (int i = 0; i < replicator.mechaForge.tasks.Count; i++)
-                //{
-                //    Main.LogManager.Logger.LogInfo($"{i} {replicator.mechaForge.tasks[i].count} {replicator.mechaForge.tasks[i].parentTaskIndex}");
-                //}
-
             }
         }
-
-
-
     }
 }
