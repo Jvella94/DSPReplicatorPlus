@@ -1,12 +1,15 @@
 ﻿using BepInEx;
-using BepInEx.Logging;
 using BepInEx.Configuration;
+using BepInEx.Logging;
 using HarmonyLib;
 using System.Reflection;
-using UnityEngine;
 using System.Security;
+using System.Security.Permissions;
+using UnityEngine;
 
 [module: UnverifiableCode]
+// Required for accessing private members
+[assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
 
 //アップデート予定？
 //最大値の表示
